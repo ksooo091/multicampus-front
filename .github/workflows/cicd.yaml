@@ -51,9 +51,9 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       with:
         push: true
-        tags: $
-          ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
-          ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:latest
+        tags: | 
+           ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
+           ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:latest
         cache-from: type=gha              
         cache-to: type=gha,mode=max
 
