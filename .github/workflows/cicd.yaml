@@ -51,7 +51,7 @@ jobs:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: front
         IMAGE_TAG: ${{ github.sha }}
-        FULL_IMAGE:  ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
+
       with:
         push: true
         tags: | 
@@ -63,8 +63,12 @@ jobs:
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: front
+        IMAGE_TAG: ${{ github.sha }}
       with:
-        image: ${{ steps.build-image.env.FULL_IMAGE }}
+        image:  ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}
         task-definition: task-definition.json
         container-name: web
 
@@ -79,6 +83,7 @@ jobs:
 
     - name: Post a message in a channel
       uses: slackapi/slack-github-action@v2.0.0
+      if: always()
       with:
         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
         webhook-type: incoming-webhook
